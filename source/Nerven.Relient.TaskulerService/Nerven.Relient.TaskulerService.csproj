@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <Product>Nerven.Relient</Product>
+    <Authors>Nerven</Authors>
+    <Copyright>Copyright © Victor Blomberg &lt;victor.blomberg@nerven.se&gt; and contributors.</Copyright>
+    <Version>0.0.1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nerven.Assertion" Version="0.6.1" />
+    <PackageReference Include="Nerven.Taskuler.Core" Version="0.2.1" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nerven.Relient\Nerven.Relient.csproj" />
+  </ItemGroup>
+
+</Project>
