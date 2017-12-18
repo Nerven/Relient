@@ -26,6 +26,8 @@ namespace Nerven.Relient.TaskulerService
         private readonly TimeSpan _DefaultInterval;
         private readonly Subject<RelientNotification<TJobInput, TJobOutput>> _Notifications;
         private readonly ConcurrentDictionary<TimeSpan, ITaskulerScheduleHandle> _Tracks;
+        private readonly Random _Random;
+        private readonly object _RandomLock;
 
         private readonly IReadOnlyDictionary<string, _Job> _Jobs;
         private bool _Disposed;
@@ -46,6 +48,8 @@ namespace Nerven.Relient.TaskulerService
             _Notifications = new Subject<RelientNotification<TJobInput, TJobOutput>>();
             NotificationsSource = _Notifications.AsObservable();
             _Tracks = new ConcurrentDictionary<TimeSpan, ITaskulerScheduleHandle>();
+            _Random = new Random(Guid.NewGuid().GetHashCode());
+            _RandomLock = new object();
 
             _Jobs = jobs.Select(_jobPair => _SetupJob(_jobPair.Key, _jobPair.Value)).ToDictionary(_job => _job.Name);
         }
@@ -66,9 +70,13 @@ namespace Nerven.Relient.TaskulerService
 
         public IObservable<RelientNotification<TJobInput, TJobOutput>> NotificationsSource { get; }
 
-        public IObservable<TaskulerNotification> TaskulerNotificationsSource => _Worker.NotificationsSource;
+        IObservable<TaskulerNotification> ITaskulerWorker.NotificationsSource => _Worker.NotificationsSource;
 
         public IReadOnlyDictionary<string, RelientJobInfo<TJobInput, TJobOutput>> GetJobInfos() => new ReadOnlyDictionary<string, RelientJobInfo<TJobInput, TJobOutput>>(_Jobs.ToDictionary(_pair => _pair.Key, _pair => _pair.Value.Info));
+
+        IEnumerable<ITaskulerScheduleHandle> ITaskulerWorker.GetSchedules() => _Worker.GetSchedules();
+
+        ITaskulerScheduleHandle ITaskulerWorker.AddSchedule(string scheduleName, ITaskulerSchedule schedule) => _Worker.AddSchedule(scheduleName, schedule);
 
         public Task StartAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -191,6 +199,8 @@ namespace Nerven.Relient.TaskulerService
 
         private Func<TaskulerTaskContext, CancellationToken, Task<TaskulerTaskResponse>> _CreateTaskCreator(_Job job)
         {
+            var _maxRandomDelay = (int)Math.Min((long)(job.Interval.Ticks / 30D), TimeSpan.FromMinutes(5).Ticks);
+
             return async (_taskulerContext, _cancellationToken) =>
                 {
                     Must.Assertion
@@ -200,6 +210,20 @@ namespace Nerven.Relient.TaskulerService
                     using (var _cancellationTokenSource = new CancellationTokenSource())
                     using (_cancellationToken.Register(() => _cancellationTokenSource.Cancel()))
                     {
+                        if (_maxRandomDelay > 0)
+                        {
+                            TimeSpan _delay;
+                            lock (_RandomLock)
+                            {
+                                _delay = TimeSpan.FromTicks(_Random.Next(_maxRandomDelay));
+                            }
+
+                            if (_delay > TimeSpan.Zero)
+                            {
+                                await Task.Delay(_delay, _cancellationToken).ConfigureAwait(false);
+                            }
+                        }
+
                         var _context = new _JobExecutionContext(job, _Notifications);
                         var _createInputTask = _CreateInputAsync(job.Info, _cancellationTokenSource.Token);
                         var _input = _createInputTask == null ? default(TJobInput) : await _createInputTask.ConfigureAwait(false);
@@ -265,7 +289,6 @@ namespace Nerven.Relient.TaskulerService
         {
             private readonly _RelientTaskulerService<TJobInput, TJobOutput> _Service;
             private readonly Func<TaskulerTaskContext, CancellationToken, Task<TaskulerTaskResponse>> _RunJob;
-            private readonly TimeSpan _Interval;
 
             private _Track _Track;
             private ITaskulerTaskHandle _TrackTaskHandle;
@@ -281,7 +304,7 @@ namespace Nerven.Relient.TaskulerService
                 Instance = jobInstance;
 
                 Lock = new object();
-                _Interval = _SimplifyInterval(jobInstance.Interval) ?? service._DefaultInterval;
+                Interval = _SimplifyInterval(jobInstance.Interval) ?? service._DefaultInterval;
                 _Track = _Track.None;
                 _RecentResults = ImmutableList<RelientResult<TJobInput, TJobOutput>>.Empty;
                 Info = new RelientJobInfo<TJobInput, TJobOutput>(
@@ -297,6 +320,8 @@ namespace Nerven.Relient.TaskulerService
             public string Name { get; }
 
             public object Lock { get; }
+
+            public TimeSpan Interval { get; }
 
             public IRelientJobInstance<TJobInput, TJobOutput> Instance { get; }
 
@@ -436,15 +461,15 @@ namespace Nerven.Relient.TaskulerService
                 {
                     case _Track.None:
                     case _Track.Normal:
-                        return _Interval;
+                        return Interval;
                     case _Track.Intensified:
-                        return _SimplifyInterval(TimeSpan.FromTicks(_Interval.Ticks / 4));
+                        return _SimplifyInterval(TimeSpan.FromTicks(Interval.Ticks / 4));
                     case _Track.Burst:
-                        return _SimplifyInterval(TimeSpan.FromTicks(_Interval.Ticks / 10));
+                        return _SimplifyInterval(TimeSpan.FromTicks(Interval.Ticks / 10));
                     default:
                         Must.Assertion.AssertNever();
                         //// ReSharper disable once HeuristicUnreachableCode
-                        throw null; // TODO
+                        return default(TimeSpan); // TODO
                 }
             }
 

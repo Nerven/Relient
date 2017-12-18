@@ -1,19 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.12
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{A210A527-1CC2-4DDE-98D5-8FFDCBC2A00D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Relient", "source\Nerven.Relient\Nerven.Relient.csproj", "{7CF9D8B4-47F5-4DD0-A62C-F1E86D71A2D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nerven.Relient", "source\Nerven.Relient\Nerven.Relient.csproj", "{7CF9D8B4-47F5-4DD0-A62C-F1E86D71A2D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Relient.TaskulerService", "source\Nerven.Relient.TaskulerService\Nerven.Relient.TaskulerService.csproj", "{77447529-5AE9-4FD3-9622-3BCF3B7E7F11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nerven.Relient.TaskulerService", "source\Nerven.Relient.TaskulerService\Nerven.Relient.TaskulerService.csproj", "{77447529-5AE9-4FD3-9622-3BCF3B7E7F11}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{67BE79B2-7F30-4B7A-A608-CEE43E441406}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Relient.Samples.DotNetCoreSample", "samples\Nerven.Relient.Samples.DotNetCoreSample\Nerven.Relient.Samples.DotNetCoreSample.csproj", "{3C69A65F-AD4B-4C26-8AC7-1475C314A73D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nerven.Relient.Samples.DotNetCoreSample", "samples\Nerven.Relient.Samples.DotNetCoreSample\Nerven.Relient.Samples.DotNetCoreSample.csproj", "{3C69A65F-AD4B-4C26-8AC7-1475C314A73D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Relient.Runner", "source\Nerven.Relient.Runner\Nerven.Relient.Runner.csproj", "{4DF581CA-67E3-4EB6-AD5A-30FD57ECFE8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nerven.Relient.Runner", "source\Nerven.Relient.Runner\Nerven.Relient.Runner.csproj", "{4DF581CA-67E3-4EB6-AD5A-30FD57ECFE8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Relient.Publishing", "source\Nerven.Relient.Publishing\Nerven.Relient.Publishing.csproj", "{676F3C5C-16D4-415D-8C76-21F099C087E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{4DF581CA-67E3-4EB6-AD5A-30FD57ECFE8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DF581CA-67E3-4EB6-AD5A-30FD57ECFE8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DF581CA-67E3-4EB6-AD5A-30FD57ECFE8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{676F3C5C-16D4-415D-8C76-21F099C087E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{676F3C5C-16D4-415D-8C76-21F099C087E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{676F3C5C-16D4-415D-8C76-21F099C087E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{676F3C5C-16D4-415D-8C76-21F099C087E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,5 +52,6 @@ Global
 		{77447529-5AE9-4FD3-9622-3BCF3B7E7F11} = {A210A527-1CC2-4DDE-98D5-8FFDCBC2A00D}
 		{3C69A65F-AD4B-4C26-8AC7-1475C314A73D} = {67BE79B2-7F30-4B7A-A608-CEE43E441406}
 		{4DF581CA-67E3-4EB6-AD5A-30FD57ECFE8C} = {A210A527-1CC2-4DDE-98D5-8FFDCBC2A00D}
+		{676F3C5C-16D4-415D-8C76-21F099C087E8} = {A210A527-1CC2-4DDE-98D5-8FFDCBC2A00D}
 	EndGlobalSection
 EndGlobal

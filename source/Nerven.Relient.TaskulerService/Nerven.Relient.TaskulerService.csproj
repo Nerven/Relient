@@ -11,10 +11,11 @@
   <ItemGroup>
     <PackageReference Include="Nerven.Assertion" Version="0.6.1" />
     <PackageReference Include="Nerven.Taskuler.Core" Version="0.2.1" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Nerven.Relient.Publishing\Nerven.Relient.Publishing.csproj" />
     <ProjectReference Include="..\Nerven.Relient\Nerven.Relient.csproj" />
   </ItemGroup>
 

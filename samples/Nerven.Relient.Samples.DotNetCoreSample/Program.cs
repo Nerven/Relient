@@ -77,11 +77,11 @@ namespace Nerven.Relient.Samples.DotNetCoreSample
                         {
                             var _waitTaskSource = new TaskCompletionSource<int>();
 
-                            using (_service.NotificationsSource.Subscribe(_notification =>
+                            using (_service.AsRelientService().NotificationsSource.Subscribe(_notification =>
                                 {
                                     Console.WriteLine($"[{_notification.JobInfo.Name} ({_notification.JobInfo.Status.State?.Status})] {_notification}");
                                 }))
-                            using (_service.TaskulerNotificationsSource.SubscribeConsole(Console.WriteLine))
+                            using (_service.AsTaskulerWorker().NotificationsSource.SubscribeConsole(Console.WriteLine))
                             using (_cancellationToken.Register(() => _waitTaskSource.SetResult(0)))
                             {
                                 await _waitTaskSource.Task.ConfigureAwait(false);

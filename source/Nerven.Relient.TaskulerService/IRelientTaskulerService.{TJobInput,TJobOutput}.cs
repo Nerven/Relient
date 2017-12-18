@@ -5,8 +5,7 @@ using Nerven.Taskuler;
 namespace Nerven.Relient.TaskulerService
 {
     [PublicAPI]
-    public interface IRelientTaskulerService<TJobInput, TJobOutput> : IRelientService<TJobInput, TJobOutput>
+    public interface IRelientTaskulerService<TJobInput, TJobOutput> : IRelientService<TJobInput, TJobOutput>, ITaskulerWorker
     {
-        IObservable<TaskulerNotification> TaskulerNotificationsSource { get; }
     }
 }

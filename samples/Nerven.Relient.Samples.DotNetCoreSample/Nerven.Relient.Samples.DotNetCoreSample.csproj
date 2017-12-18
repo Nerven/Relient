@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\source\Nerven.Relient.Publishing\Nerven.Relient.Publishing.csproj" />
     <ProjectReference Include="..\..\source\Nerven.Relient.Runner\Nerven.Relient.Runner.csproj" />
     <ProjectReference Include="..\..\source\Nerven.Relient.TaskulerService\Nerven.Relient.TaskulerService.csproj" />
     <ProjectReference Include="..\..\source\Nerven.Relient\Nerven.Relient.csproj" />
