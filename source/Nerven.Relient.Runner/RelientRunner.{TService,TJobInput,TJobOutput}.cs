@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DasMulli.Win32.ServiceUtils;
 using JetBrains.Annotations;
 using Nerven.Assertion;
 
@@ -77,38 +76,9 @@ namespace Nerven.Relient.Runner
                     });
 
                 _HookTasks = _Context.ServiceHooks.Select(_hookAsync => _hookAsync(_Context.Service, _CancellationTokenSource.Token)).ToArray();
-
-                var _win32ServiceTask = _TryStartWin32Service(_RunTaskSource);
-                if (_win32ServiceTask != null)
-                {
-                    Mode = RelientRunnerMode.Win32Service;
-                    return _ChainTaskToCompletionSource(_win32ServiceTask, _RunTaskSource);
-                }
-
+                
                 Mode = RelientRunnerMode.Cli;
                 return _ChainTaskToCompletionSource(_RunCli(_CancellationTokenSource), _RunTaskSource);
-            }
-        }
-
-        private Task<int> _TryStartWin32Service(TaskCompletionSource<int> runTaskSource)
-        {
-            if (Debugger.IsAttached)
-            {
-                return null;
-            }
-
-            var _win32ServiceHost = new Win32ServiceHost(new _Win32Service(this, runTaskSource));
-            try
-            {
-                return _win32ServiceHost.RunAsync();
-            }
-            catch (Win32Exception)
-            {
-                return null;
-            }
-            catch (PlatformNotSupportedException)
-            {
-                return null;
             }
         }
 
@@ -141,41 +111,6 @@ namespace Nerven.Relient.Runner
             }
 
             return target.Task;
-        }
-        
-        private sealed class _Win32Service : IWin32Service
-        {
-            private readonly RelientRunner<TService, TJobInput, TJobOutput> _Runner;
-            private readonly TaskCompletionSource<int> _RunTaskSource;
-
-            public _Win32Service(
-                RelientRunner<TService, TJobInput, TJobOutput> runner,
-                TaskCompletionSource<int> runTaskSource)
-            {
-                _Runner = runner;
-                _RunTaskSource = runTaskSource;
-            }
-
-            public string ServiceName => _Runner._Context.ServiceName;
-
-            public void Start(string[] startupArguments, ServiceStoppedCallback serviceStoppedCallback)
-            {
-                _RunTaskSource.Task
-                    .ContinueWith(_task => serviceStoppedCallback());
-
-                _ChainTaskToCompletionSource(
-                    _Runner._Context.Service
-                        .RunAsync(CancellationToken.None)
-                        .ContinueWith(_runTask => 0, TaskContinuationOptions.OnlyOnRanToCompletion),
-                    _RunTaskSource);
-            }
-
-            public void Stop()
-            {
-                _Runner._Context.Service
-                    .StopAsync()
-                    .ContinueWith(_startTask => _RunTaskSource.SetException(_startTask.Exception), TaskContinuationOptions.OnlyOnFaulted);
-            }
         }
     }
 }

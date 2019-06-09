@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DasMulli.Win32.ServiceUtils" Version="1.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Nerven.Relient\Nerven.Relient.csproj" />
   </ItemGroup>
 

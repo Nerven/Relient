@@ -4,6 +4,5 @@
     {
         None,
         Cli,
-        Win32Service
     }
 }
